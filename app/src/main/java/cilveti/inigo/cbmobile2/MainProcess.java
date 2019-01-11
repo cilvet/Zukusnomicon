@@ -10,4 +10,6 @@ public interface MainProcess {
     List<SearchResult> getResults(String query);
     void openConjuro(String id);
     void openSearch();
+    void cargarDb();
+    void copyDatabase();
 }

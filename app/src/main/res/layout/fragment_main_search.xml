@@ -8,25 +8,107 @@
     tools:context=".ContainerActivity">
 
 
-    <com.mancj.materialsearchbar.MaterialSearchBar
-        android:id="@+id/searchBar"
+    <RelativeLayout
+        android:id="@+id/sarchRelative"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/rounded_white_corners_stroke"
-        android:elevation="3dp"
-        app:mt_hint="Custom hint"
-        app:mt_maxSuggestionsCount="10"
-        app:mt_speechMode="false" />
+
+        android:layout_height="wrap_content">
+
+        <com.mancj.materialsearchbar.MaterialSearchBar
+            android:id="@+id/searchBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mt_navIconEnabled="true"
+            app:mt_menuDividerEnabled="true"
+            app:mt_searchIconDrawable="@drawable/ic_filter"
+            app:mt_menuIconDrawable="@drawable/ic_menu_black_24dp"
+            android:elevation="3dp"
+            app:mt_hint="Busca un conjuro"
+            app:mt_placeholder="Busca un conjuro"
+            app:mt_maxSuggestionsCount="10"
+            app:mt_speechMode="false" />
+
+        <RelativeLayout
+            android:id="@+id/filters"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_below="@id/searchBar"
+            android:background="@color/white"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp">
+
+            <LinearLayout
+                android:id="@+id/buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/go_to_sports_button"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_marginEnd="20dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/outlined_button_style_white"
+                    android:paddingEnd="@dimen/button_start_end_padding"
+                    android:paddingStart="@dimen/button_start_end_padding"
+                    android:text="Nivel"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/button_text_size" />
+
+                <Button
+                    android:id="@+id/go_to_locations_button"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_weight="1"
+                    android:background="@drawable/outlined_button_style_white"
+                    android:paddingEnd="@dimen/button_start_end_padding"
+                    android:paddingStart="@dimen/button_start_end_padding"
+                    android:text="Escuela"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/button_text_size" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/showPreferencesButton"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:layout_below="@id/buttons"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@drawable/outlined_button_style_white"
+                android:paddingEnd="@dimen/button_start_end_padding"
+                android:paddingStart="@dimen/button_start_end_padding"
+                android:text="Zukus"
+                android:textColor="@color/white"
+                android:textSize="@dimen/button_text_size" />
+
+            <Switch
+                android:id="@+id/fav_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/showPreferencesButton"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:gravity="start|center_vertical"
+                android:text="Mostrar solo mis favoritos"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_field_text_size" />
+
+        </RelativeLayout>
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/searchBar"
+        android:layout_below="@+id/sarchRelative"
         android:layout_marginTop="5dp"
         android:elevation="4dp" />
 

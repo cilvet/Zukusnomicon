@@ -36,7 +36,12 @@ import com.couchbase.lite.Result;
 import com.couchbase.lite.ResultSet;
 import com.couchbase.lite.SelectResult;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mancj.materialsearchbar.MaterialSearchBar;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -94,11 +99,14 @@ public class ContainerActivity extends AppCompatActivity implements MainProcess 
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     abrirFragmento();
                     abrirDatabase();
+                    //cargarDB();
+
+
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
 
                 } else {
-                    Toast.makeText(this, "pur que no me kieres D:", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "ZUKUS HAS BEEN SLAIN", Toast.LENGTH_LONG).show();
                     finish();
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
@@ -163,8 +171,15 @@ public class ContainerActivity extends AppCompatActivity implements MainProcess 
         return database;
     }
 
-    private void cargarDB(){
-        ConjuroContainer conjuroContainer = loadJSONFromAsset(this);
+    private void cargarDB() throws JSONException {
+        JSONObject conjuroContainer = loadJSONFromAsset(this);
+        JSONArray array = (JSONArray)conjuroContainer.get("conjuros");
+        List<Conjuro> conjuros = new ArrayList<>();
+        Gson mygson = new Gson();
+        for(int i = 0; i < array.length(); i++){
+            conjuros.add(mygson.fromJson(array.get(i).toString(), Conjuro.class));
+        }
+
 
 
         // Get the database (and create it if it doesn’t exist).
@@ -177,7 +192,7 @@ public class ContainerActivity extends AppCompatActivity implements MainProcess 
         }
 
 
-        for(Conjuro conjuro : conjuroContainer.getConjuros()){
+        for(Conjuro conjuro : conjuros){
 
             Map<String, Object> properties = conjuro.getPropertiesForUpdate();
 
@@ -189,11 +204,15 @@ public class ContainerActivity extends AppCompatActivity implements MainProcess 
             }
 
         }
+
+        this.database = database;
     }
 
-    public ConjuroContainer loadJSONFromAsset(Context context) {
+    public JSONObject loadJSONFromAsset(Context context) {
         String json = null;
         ConjuroContainer conjuroContainer = null;
+        JSONObject object = null;
+
         try {
             InputStream is = context.getAssets().open("conjuros.json");
 
@@ -206,15 +225,18 @@ public class ContainerActivity extends AppCompatActivity implements MainProcess 
             is.close();
 
             json = new String(buffer, "UTF-8");
+            object = new JSONObject(json);
 
-            conjuroContainer = new Gson().fromJson(json, ConjuroContainer.class);
+            //conjuroContainer = new Gson().fromJson(json, ConjuroContainer.class);
 
 
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        return conjuroContainer;
+        return object;
 
     }
 
@@ -267,6 +289,20 @@ public class ContainerActivity extends AppCompatActivity implements MainProcess 
     @Override
     public void openSearch() {
         onBackPressed();
+    }
+
+    @Override
+    public void cargarDb(){
+//        try {
+//            cargarDB();
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    @Override
+    public void copyDatabase(){
+        Utils.copyDatabase(databaseName, this, database);
     }
 
     @Override

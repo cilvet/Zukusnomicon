@@ -6,14 +6,16 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Conjuro {
     private String conjuroRaw = null;
     private String nombre;
-    private String nivel;
+    private List<String> nivel;
     private String escuela;
-    private String componentes;
+    private List<String> componentes;
+    private List<String> descriptores;
     private String tiempoLanzamiento;
     private String alcance;
     private String objetivo;
@@ -43,24 +45,61 @@ public class Conjuro {
         return conjuro;
     }
 
+
+
     public String getConjuroRaw() {
         return conjuroRaw;
+    }
+
+    public List<String> getNivel() {
+        return nivel;
+    }
+
+    public String getNiveles() {
+        String result = "";
+        if(nivel!=null)
+        for(String descripcion: nivel){
+            result += ", " +  descripcion;
+        }
+        return result;
+    }
+
+
+    public void setNivel(List<String> nivel) {
+        this.nivel = nivel;
+    }
+
+    public List<String> getComponentes() {
+        return componentes;
+    }
+
+    public String getComponentesString(){
+        String result = "";
+        if(componentes!=null)
+        for(String descripcion: componentes){
+            result += ", " +  descripcion;
+        }
+        return result;
+    }
+
+    public void setComponentes(List<String> componentes) {
+        this.componentes = componentes;
+    }
+
+    public List<String> getDescriptores() {
+        return descriptores;
+    }
+
+    public void setDescriptores(List<String> descriptores) {
+        this.descriptores = descriptores;
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public String getNivel() {
-        return nivel;
-    }
-
     public String getEscuela() {
         return escuela;
-    }
-
-    public String getComponentes() {
-        return componentes;
     }
 
     public String getTiempoLanzamiento() {
@@ -109,16 +148,8 @@ public class Conjuro {
         this.nombre = nombre;
     }
 
-    public void setNivel( String nivel ) {
-        this.nivel = nivel;
-    }
-
     public void setEscuela( String escuela ) {
         this.escuela = escuela;
-    }
-
-    public void setComponentes( String componentes ) {
-        this.componentes = componentes;
     }
 
     public void setTiempoLanzamiento( String tiempoLanzamiento ) {
@@ -163,6 +194,7 @@ public class Conjuro {
 
     public String getDescripciones(){
         String result = "";
+        if(descripcion!=null)
         for(String descripcion: descripcion){
             result += "\n\n" +  descripcion;
         }

@@ -7,5 +7,21 @@
     <color name="gray_darker">#CBCFD5</color>
     <color name="selected_background">#F0F0F0</color>
 
+    <color name="primary">#00a9e0</color>
+    <color name="primary_dark">#0148B2</color>
+    <color name="primary_light">#008CFF</color>
+    <color name="accent">#4bdd22</color>
+    <color name="primary_text">#27374D</color>
+    <color name="secondary_text">#777777</color>
+    <color name="background_gray">#F2F3F3</color>
+    <color name="lightGray">#E0E0E0</color>
+    <color name="veryLightGray">#EEEEEE</color>
+    <color name="white">#FFF</color>
+    <color name="icons_gray">#BCBCBC</color>
+    <color name="darkGray">#616161</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="wt_background">#0288bc</color>
+    <color name="number_background">#a8e2f5</color>
+    <color name="number_header">#00a9e0</color>
 
 </resources>

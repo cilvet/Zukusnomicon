@@ -10,9 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.couchbase.lite.CouchbaseLiteException;
@@ -54,24 +56,67 @@ public class MainSearchFragment extends Fragment {
 
     private SearchResultsAdapter adapter;
     MainProcess mainProcess;
+    MaterialSearchBar searchBar;
+    RelativeLayout filters;
 
     public MainSearchFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(searchBar!=null){
+
+        }
+    }
+
+    boolean filtros = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mainProcess = (MainProcess) getActivity();
+        final float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, getResources().getDisplayMetrics());
+
 
         View rootview =  inflater.inflate(R.layout.fragment_main_search, container, false);
-        MaterialSearchBar searchBar = rootview.findViewById(R.id.searchBar);
+        searchBar = rootview.findViewById(R.id.searchBar);
+        filters = rootview.findViewById(R.id.filters);
         RecyclerView recyclerView = rootview.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new SearchResultsAdapter(new ArrayList<SearchResult>(), getActivity(), mainProcess);
         recyclerView.setAdapter(adapter);
+
+
+
+
+        searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+            @Override
+            public void onSearchStateChanged(boolean enabled) {
+
+                if(filtros){
+                    resizeFiltersAnimation(0, searchBar.getMinimumHeight() + Functions.getStatusBarHeight(getContext()) + (int) px, Constants.ANIMATION_TYPE_DESCENDENT);
+                    filtros = !filtros;
+                }else{
+                    resizeFiltersAnimation(searchBar.getMinimumHeight() + Functions.getStatusBarHeight(getContext()) + (int) px, 0, Constants.ANIMATION_TYPE_ASCENDENT);
+                    filtros = !filtros;
+
+                }
+
+            }
+
+            @Override
+            public void onSearchConfirmed(CharSequence text) {
+
+            }
+
+            @Override
+            public void onButtonClicked(int buttonCode) {
+
+            }
+        });
 
         searchBar.addTextChangeListener(new TextWatcher() {
             @Override
@@ -83,7 +128,7 @@ public class MainSearchFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 if(s.toString().equals("copy database")){
-                    //copyDatabase(databaseName);
+                    mainProcess.copyDatabase();
                 }
                 adapter.updateValues(mainProcess.getResults(s.toString()));
             }
@@ -94,9 +139,20 @@ public class MainSearchFragment extends Fragment {
             }
         });
 
-
-
         return rootview;
+    }
+
+    /**
+     * Animar redimensionando los filtros.
+     *
+     * @param targetHeight  Altura final de la animación de redimensión.
+     * @param startHeight   Altura de inicio de la animación de redimensión.
+     * @param animationType Tipo de animación, si ascendente o descendente.
+     */
+    private void resizeFiltersAnimation(int targetHeight, int startHeight, int animationType) {
+        ResizeAnimation resizeAnimation = new ResizeAnimation(filters, targetHeight, startHeight, animationType);
+        resizeAnimation.setDuration(200);
+        filters.startAnimation(resizeAnimation);
     }
 
 }

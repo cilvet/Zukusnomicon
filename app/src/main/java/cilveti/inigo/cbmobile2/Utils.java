@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 
 public class Utils {
-    private void copyDatabase(String nombreDb, Context c, Database database) {
+    public static void copyDatabase(String nombreDb, Context c, Database database) {
         File dir = c.getFilesDir();
         String fileparent = c.getFilesDir().getAbsolutePath();
 

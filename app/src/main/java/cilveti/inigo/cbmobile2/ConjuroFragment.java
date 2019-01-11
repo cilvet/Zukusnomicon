@@ -51,10 +51,10 @@ public class ConjuroFragment extends Fragment {
 
         Bundle args = new Bundle();
         args.putString("idconjuro", conjuro);
-
         ConjuroFragment fragment = new ConjuroFragment();
         fragment.setArguments(args);
         return fragment;
+
     }
 
 
@@ -62,8 +62,6 @@ public class ConjuroFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         assert getArguments() != null;
-
-
     }
 
     @Override
@@ -77,8 +75,8 @@ public class ConjuroFragment extends Fragment {
                 tv_nombre.setText(conjuro.getNombre());
                 tv_nombre_raw.setText(conjuro.getConjuroRaw());
                 tv_escuelas.setText(conjuro.getEscuela());
-                tv_nivel.setText(conjuro.getNivel());
-                tv_componentes.setText(conjuro.getComponentes());
+                tv_nivel.setText(conjuro.getNiveles());
+                tv_componentes.setText(conjuro.getComponentesString());
                 tv_tiempo_lanzamiento.setText(conjuro.getTiempoLanzamiento());
                 tv_alcance.setText(conjuro.getAlcance());
                 tv_objetivo.setText(conjuro.getObjetivo());
