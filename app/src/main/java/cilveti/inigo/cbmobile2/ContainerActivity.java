@@ -18,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.couchbase.lite.ArrayExpression;
+import com.couchbase.lite.ArrayFunction;
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.DataSource;
 import com.couchbase.lite.Database;
@@ -27,6 +29,7 @@ import com.couchbase.lite.Expression;
 import com.couchbase.lite.FullTextExpression;
 import com.couchbase.lite.FullTextIndex;
 import com.couchbase.lite.FullTextIndexItem;
+import com.couchbase.lite.Function;
 import com.couchbase.lite.IndexBuilder;
 import com.couchbase.lite.Meta;
 import com.couchbase.lite.MutableDocument;
@@ -35,6 +38,7 @@ import com.couchbase.lite.QueryBuilder;
 import com.couchbase.lite.Result;
 import com.couchbase.lite.ResultSet;
 import com.couchbase.lite.SelectResult;
+import com.couchbase.lite.VariableExpression;
 import com.google.gson.Gson;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 
@@ -227,14 +231,17 @@ public class ContainerActivity extends AppCompatActivity implements MainProcess 
     public List<SearchResult> getResults(String query) {
         List<SearchResult> searchResults = new ArrayList<>();
 
+        VariableExpression VAR_LIKEDBY = ArrayExpression.variable("myExpession");
+
         FullTextExpression expression = FullTextExpression.index(indexName);
         Query searchQuery = QueryBuilder
                 .select(SelectResult.expression(Meta.id),
                         SelectResult.expression(Expression.property("nombre")),
                         SelectResult.expression(Expression.property("descripcion")))
                 .from(DataSource.database(database))
-                .where(expression.match(query))
-                .limit(Expression.intValue(100));
+                .where(Function.lower(Expression.property("nombre")).like(Expression.string("%"+ query + "%"))
+                        .or(Function.lower(Expression.property("nivel")).like(Expression.string("%"+ query + "%"))))
+                .limit(Expression.intValue(50));
         ResultSet results = null;
         try {
             results = searchQuery.execute();
