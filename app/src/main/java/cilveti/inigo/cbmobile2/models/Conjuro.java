@@ -45,8 +45,6 @@ public class Conjuro {
         return conjuro;
     }
 
-
-
     public String getConjuroRaw() {
         return conjuroRaw;
     }

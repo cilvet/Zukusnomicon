@@ -6,7 +6,7 @@
     <color name="gray">#D3D3D3</color>
     <color name="gray_darker">#CBCFD5</color>
     <color name="selected_background">#F0F0F0</color>
-
+    <color name="transparent">#00000000</color>
     <color name="primary">#00a9e0</color>
     <color name="primary_dark">#0148B2</color>
     <color name="primary_light">#008CFF</color>
@@ -16,12 +16,14 @@
     <color name="background_gray">#F2F3F3</color>
     <color name="lightGray">#E0E0E0</color>
     <color name="veryLightGray">#EEEEEE</color>
-    <color name="white">#FFF</color>
+    <color name="white">#ffffff</color>
     <color name="icons_gray">#BCBCBC</color>
     <color name="darkGray">#616161</color>
     <color name="divider">#BDBDBD</color>
     <color name="wt_background">#0288bc</color>
     <color name="number_background">#a8e2f5</color>
     <color name="number_header">#00a9e0</color>
+    <color name="zukus_purple">#D7AEFB</color>
+    <color name="red">#F28B82</color>
 
 </resources>

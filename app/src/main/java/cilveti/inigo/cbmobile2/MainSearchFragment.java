@@ -1,6 +1,7 @@
 package cilveti.inigo.cbmobile2;
 
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -48,6 +50,8 @@ import java.util.Locale;
 
 import cilveti.inigo.cbmobile2.models.SearchResult;
 
+import static cilveti.inigo.cbmobile2.MaterialSearchBarCustom.BUTTON_FILTERS;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,8 +60,9 @@ public class MainSearchFragment extends Fragment {
 
     private SearchResultsAdapter adapter;
     MainProcess mainProcess;
-    MaterialSearchBar searchBar;
+    MaterialSearchBarCustom searchBar;
     RelativeLayout filters;
+    RecyclerView recyclerView;
 
     public MainSearchFragment() {
         // Required empty public constructor
@@ -66,44 +71,37 @@ public class MainSearchFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(searchBar!=null){
-
-        }
     }
 
     boolean filtros = false;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mainProcess = (MainProcess) getActivity();
-        final float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, getResources().getDisplayMetrics());
+
 
 
         View rootview =  inflater.inflate(R.layout.fragment_main_search, container, false);
         searchBar = rootview.findViewById(R.id.searchBar);
         filters = rootview.findViewById(R.id.filters);
-        RecyclerView recyclerView = rootview.findViewById(R.id.recyclerView);
+        recyclerView = rootview.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new SearchResultsAdapter(new ArrayList<SearchResult>(), getActivity(), mainProcess);
         recyclerView.setAdapter(adapter);
+        searchBar.setMenuDividerEnabled(false);
+
+        filters.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int filterHeight = filters.getMeasuredHeight();
+
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, filterHeight, getResources().getDisplayMetrics());
 
 
-
-
-        searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+        searchBar.setOnSearchActionListener(new MaterialSearchBarCustom.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
-
-                if(filtros){
-                    resizeFiltersAnimation(0, searchBar.getMinimumHeight() + Functions.getStatusBarHeight(getContext()) + (int) px, Constants.ANIMATION_TYPE_DESCENDENT);
-                    filtros = !filtros;
-                }else{
-                    resizeFiltersAnimation(searchBar.getMinimumHeight() + Functions.getStatusBarHeight(getContext()) + (int) px, 0, Constants.ANIMATION_TYPE_ASCENDENT);
-                    filtros = !filtros;
-
-                }
 
             }
 
@@ -115,6 +113,21 @@ public class MainSearchFragment extends Fragment {
             @Override
             public void onButtonClicked(int buttonCode) {
 
+                filters.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                int filterHeight = filters.getMeasuredHeight();
+                float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, filterHeight, getResources().getDisplayMetrics());
+
+
+                if(buttonCode==BUTTON_FILTERS){
+                    if(filtros){
+                        resizeFiltersAnimation(0, filterHeight, Constants.ANIMATION_TYPE_DESCENDENT);
+                        filtros = !filtros;
+                    }else{
+                        resizeFiltersAnimation(filterHeight, 0, Constants.ANIMATION_TYPE_ASCENDENT);
+                        filtros = !filtros;
+
+                    }
+                }
             }
         });
 
