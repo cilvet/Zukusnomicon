@@ -1,65 +1,42 @@
-package cilveti.inigo.cbmobile2;
+package cilveti.inigo.cbmobile2.ui.fragments;
 
 
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.couchbase.lite.CouchbaseLiteException;
-import com.couchbase.lite.DataSource;
-import com.couchbase.lite.Database;
-import com.couchbase.lite.DatabaseConfiguration;
-import com.couchbase.lite.Expression;
-import com.couchbase.lite.FullTextExpression;
-import com.couchbase.lite.FullTextIndex;
-import com.couchbase.lite.FullTextIndexItem;
-import com.couchbase.lite.IndexBuilder;
-import com.couchbase.lite.Meta;
-import com.couchbase.lite.Query;
-import com.couchbase.lite.QueryBuilder;
-import com.couchbase.lite.Result;
-import com.couchbase.lite.ResultSet;
-import com.couchbase.lite.SelectResult;
-import com.couchbase.lite.internal.utils.FileUtils;
-import com.mancj.materialsearchbar.MaterialSearchBar;
-
-import org.joda.time.DateTime;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
+import cilveti.inigo.cbmobile2.business.LocalMainSearchPresenter;
+import cilveti.inigo.cbmobile2.business.interfaces.MainProcess;
+import cilveti.inigo.cbmobile2.business.interfaces.MainSearchContract;
+import cilveti.inigo.cbmobile2.utils.ui.MaterialSearchBarCustom;
+import cilveti.inigo.cbmobile2.R;
+import cilveti.inigo.cbmobile2.utils.ui.ResizeAnimation;
+import cilveti.inigo.cbmobile2.ui.adapters.SearchResultsAdapter;
+import cilveti.inigo.cbmobile2.constants.Constants;
 import cilveti.inigo.cbmobile2.models.SearchResult;
 
-import static cilveti.inigo.cbmobile2.MaterialSearchBarCustom.BUTTON_FILTERS;
+import static cilveti.inigo.cbmobile2.utils.ui.MaterialSearchBarCustom.BUTTON_FILTERS;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainSearchFragment extends Fragment {
+public class MainSearchFragment extends Fragment implements MainSearchContract.View {
 
     private SearchResultsAdapter adapter;
     MainProcess mainProcess;
+    MainSearchContract.Presenter presenter;
     MaterialSearchBarCustom searchBar;
     RelativeLayout filters;
     RecyclerView recyclerView;
@@ -81,7 +58,7 @@ public class MainSearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mainProcess = (MainProcess) getActivity();
-
+        presenter = new LocalMainSearchPresenter(mainProcess.getLocalDataFetcher(), this);
 
 
         View rootview =  inflater.inflate(R.layout.fragment_main_search, container, false);
@@ -143,8 +120,9 @@ public class MainSearchFragment extends Fragment {
                 if(s.toString().equals("copy database")){
                     mainProcess.copyDatabase();
                 }
-                adapter.updateValues(mainProcess.getResults(s.toString()));
-            }
+
+                presenter.search(s.toString());
+                }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -168,4 +146,10 @@ public class MainSearchFragment extends Fragment {
         filters.startAnimation(resizeAnimation);
     }
 
+    @Override
+    public void showResults(List<SearchResult> results) {
+        if(adapter!=null){
+            adapter.updateValues(results);
+        }
+    }
 }

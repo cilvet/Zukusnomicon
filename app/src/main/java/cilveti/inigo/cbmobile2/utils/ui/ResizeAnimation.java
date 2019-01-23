@@ -1,8 +1,10 @@
-package cilveti.inigo.cbmobile2;
+package cilveti.inigo.cbmobile2.utils.ui;
 
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+
+import cilveti.inigo.cbmobile2.constants.Constants;
 
 /**
  * Clase con una animación de redimensión.

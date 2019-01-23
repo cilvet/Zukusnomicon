@@ -1,4 +1,4 @@
-package cilveti.inigo.cbmobile2;
+package cilveti.inigo.cbmobile2.utils;
 
 import android.content.Context;
 import android.os.Environment;
@@ -15,7 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
-public class Utils {
+public class file_utils {
     public static void copyDatabase(String nombreDb, Context c, Database database) {
         File dir = c.getFilesDir();
         String fileparent = c.getFilesDir().getAbsolutePath();

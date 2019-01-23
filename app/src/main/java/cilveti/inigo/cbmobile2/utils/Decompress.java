@@ -1,4 +1,4 @@
-package cilveti.inigo.cbmobile2;
+package cilveti.inigo.cbmobile2.utils;
 
 import android.content.Context;
 import android.util.Log;

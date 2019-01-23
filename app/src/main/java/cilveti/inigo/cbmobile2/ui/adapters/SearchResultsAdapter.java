@@ -1,4 +1,4 @@
-package cilveti.inigo.cbmobile2;
+package cilveti.inigo.cbmobile2.ui.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,13 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.couchbase.lite.Document;
-import com.couchbase.lite.Result;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import cilveti.inigo.cbmobile2.R;
+import cilveti.inigo.cbmobile2.business.interfaces.MainProcess;
 import cilveti.inigo.cbmobile2.models.SearchResult;
 
 /**
@@ -77,11 +74,11 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
     public void onBindViewHolder(final SimpleViewHolder holder, int position) {
 
         final SearchResult result = (SearchResult) getItem(position);
-        if(result!=null && result.getNombre()!=null){
+        if(result!=null && result.getName()!=null){
 
             try{
-                holder.tv_value.setText(wordFirstCap((String) result.getNombre()));
-                List<String> list = (List<String>) result.getDescripcion();
+                holder.tv_value.setText(wordFirstCap((String) result.getName()));
+                List<String> list = (List<String>) result.getDescription();
                 holder.tv_description.setText(list.get(0));
             }catch (Exception e){
                 e.printStackTrace();

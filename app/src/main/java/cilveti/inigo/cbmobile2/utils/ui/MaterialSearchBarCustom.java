@@ -1,4 +1,4 @@
-package cilveti.inigo.cbmobile2;
+package cilveti.inigo.cbmobile2.utils.ui;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
@@ -39,6 +39,8 @@ import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cilveti.inigo.cbmobile2.R;
 
 import static android.content.ContentValues.TAG;
 

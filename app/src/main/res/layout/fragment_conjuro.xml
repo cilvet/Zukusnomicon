@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ConjuroFragment">
+    tools:context=".ui.fragments.ConjuroFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -41,7 +41,8 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp">
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/floatingActionButton"
@@ -67,7 +68,7 @@
                 </RelativeLayout>
 
                 <TextView
-                    android:id="@+id/tv_raw_name"
+                    android:id="@+id/tv_original_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -195,6 +196,29 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/tv_objetivo_label"
+                        android:text="TextView"
+                        android:textColor="@android:color/black"
+                        android:textSize="17sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tv_area_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Area: "
+                        android:textColor="@android:color/black"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_area"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/tv_area_label"
                         android:text="TextView"
                         android:textColor="@android:color/black"
                         android:textSize="17sp" />

@@ -1,4 +1,4 @@
-package cilveti.inigo.cbmobile2;
+package cilveti.inigo.cbmobile2.ui.fragments;
 
 import android.content.Context;
 import android.net.Uri;
@@ -6,14 +6,17 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import cilveti.inigo.cbmobile2.business.ConjuroPresenter;
+import cilveti.inigo.cbmobile2.business.interfaces.ConjuroContract;
+import cilveti.inigo.cbmobile2.business.interfaces.MainProcess;
+import cilveti.inigo.cbmobile2.R;
 import cilveti.inigo.cbmobile2.models.Conjuro;
-import dagger.Multibindings;
+import io.reactivex.disposables.Disposable;
 
 
 /**
@@ -22,21 +25,24 @@ import dagger.Multibindings;
  * {@link ConjuroFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class ConjuroFragment extends Fragment {
+public class ConjuroFragment extends Fragment implements ConjuroContract.View {
 
     private OnFragmentInteractionListener mListener;
     private String idConjuro;
     private MainProcess mainProcess;
     private Conjuro conjuro;
+    private Disposable disposable;
+    ConjuroContract.Presenter presenter;
 
     TextView tv_nombre;
-    TextView tv_nombre_raw;
+    TextView tv_nombre_original;
     TextView tv_escuelas;
     TextView tv_nivel;
     TextView tv_componentes;
     TextView tv_tiempo_lanzamiento;
     TextView tv_alcance;
     TextView tv_objetivo;
+    TextView tv_area;
     TextView tv_duracion;
     TextView tv_tirada_salvacion;
     TextView tv_resistencia_conjuros;
@@ -61,30 +67,21 @@ public class ConjuroFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        assert getArguments() != null;
+
+        if(getActivity()!=null){
+            mainProcess = (MainProcess) getActivity();
+            presenter = new ConjuroPresenter(mainProcess.getLocalDataFetcher(), this);
+        }
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
         this.idConjuro = getArguments().getString("idconjuro");
-        mainProcess = (MainProcess) getActivity();
-        if(idConjuro!=null && mainProcess!=null){
-            conjuro = mainProcess.getConjuro(idConjuro);
-            if(conjuro!=null){
-                tv_nombre.setText(conjuro.getNombre());
-                tv_nombre_raw.setText(conjuro.getConjuroRaw());
-                tv_escuelas.setText(conjuro.getEscuela());
-                tv_nivel.setText(conjuro.getNiveles());
-                tv_componentes.setText(conjuro.getComponentesString());
-                tv_tiempo_lanzamiento.setText(conjuro.getTiempoLanzamiento());
-                tv_alcance.setText(conjuro.getAlcance());
-                tv_objetivo.setText(conjuro.getObjetivo());
-                tv_duracion.setText(conjuro.getDuracion());
-                tv_tirada_salvacion.setText(conjuro.getTiradaSalvacion());
-                tv_resistencia_conjuros.setText(conjuro.getResistenciaConjuros());
-                tv_descripcion.setText(conjuro.getDescripciones());
-            }
+
+        if(idConjuro!=null && presenter!=null){
+            presenter.getConjuro(idConjuro);
         }
     }
 
@@ -95,13 +92,14 @@ public class ConjuroFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_conjuro, container, false);
 
         tv_nombre = rootView.findViewById(R.id.tv_nombre);
-        tv_nombre_raw = rootView.findViewById(R.id.tv_raw_name);
+        tv_nombre_original = rootView.findViewById(R.id.tv_original_name);
         tv_escuelas = rootView.findViewById(R.id.tv_escuelas);
         tv_nivel = rootView.findViewById(R.id.tv_nivel);
         tv_componentes = rootView.findViewById(R.id.tv_componentes);
         tv_tiempo_lanzamiento = rootView.findViewById(R.id.tv_tiempo_lanzamiento);
         tv_alcance = rootView.findViewById(R.id.tv_alcance);
         tv_objetivo = rootView.findViewById(R.id.tv_objetivo);
+        tv_area = rootView.findViewById(R.id.tv_area);
         tv_duracion = rootView.findViewById(R.id.tv_duracion);
         tv_tirada_salvacion = rootView.findViewById(R.id.tv_tirada_salvacion);
         tv_resistencia_conjuros = rootView.findViewById(R.id.tv_resistencia_conjuros);
@@ -133,7 +131,34 @@ public class ConjuroFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        if(disposable!=null)disposable.dispose();
         mListener = null;
+    }
+
+    @Override
+    public void showConjuro(final Conjuro conjuro) {
+        ConjuroFragment.this.conjuro = conjuro;
+        if(conjuro!=null){
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    tv_nombre.setText(conjuro.getNombre());
+                    tv_nombre_original.setText(conjuro.getManual());
+                    tv_escuelas.setText(conjuro.getEscuela());
+                    tv_nivel.setText(conjuro.getNiveles());
+                    tv_componentes.setText(conjuro.getComponentesString());
+                    tv_tiempo_lanzamiento.setText(conjuro.getTiempoLanzamiento());
+                    tv_alcance.setText(conjuro.getAlcance());
+                    tv_objetivo.setText(conjuro.getObjetivo());
+                    tv_objetivo.setText(conjuro.getObjetivo());
+                    tv_area.setText(conjuro.getArea());
+                    tv_tirada_salvacion.setText(conjuro.getTiradaSalvacion());
+                    tv_resistencia_conjuros.setText(conjuro.getResistenciaConjuros());
+                    tv_descripcion.setText(conjuro.getDescripciones());
+                }
+            });
+
+        }
     }
 
     /**

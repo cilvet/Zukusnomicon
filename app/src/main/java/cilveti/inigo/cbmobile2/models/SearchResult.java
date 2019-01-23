@@ -6,19 +6,26 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class SearchResult {
-    private String conjuroRaw = null;
-    private String nombre;
+    private String originalName = null;
+    private String name;
     private String id;
-    private ArrayList<String> descripcion = new ArrayList<String>();
+    private ArrayList<String> description = new ArrayList<String>();
 
     public SearchResult(Map<String, Object> map){
         Gson gson = new Gson();
         String jsonString = gson.toJson(map, Map.class);
         SearchResult searchResult = gson.fromJson(jsonString, SearchResult.class);
-        this.conjuroRaw = searchResult.conjuroRaw;
-        this.nombre = searchResult.nombre;
-        this.descripcion = searchResult.descripcion;
+        this.originalName = searchResult.originalName;
+        this.name = searchResult.name;
+        this.description = searchResult.description;
         this.id = searchResult.id;
+    }
+
+    public SearchResult(String originalName, String name, String id, ArrayList<String> description) {
+        this.originalName = originalName;
+        this.name = name;
+        this.id = id;
+        this.description = description;
     }
 
     public String getId() {
@@ -29,27 +36,27 @@ public class SearchResult {
         this.id = id;
     }
 
-    public String getConjuroRaw() {
-        return conjuroRaw;
+    public String getOriginalName() {
+        return originalName;
     }
 
-    public void setConjuroRaw(String conjuroRaw) {
-        this.conjuroRaw = conjuroRaw;
+    public void setOriginalName(String originalName) {
+        this.originalName = originalName;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public ArrayList<String> getDescripcion() {
-        return descripcion;
+    public ArrayList<String> getDescription() {
+        return description;
     }
 
-    public void setDescripcion(ArrayList<String> descripcion) {
-        this.descripcion = descripcion;
+    public void setDescription(ArrayList<String> description) {
+        this.description = description;
     }
 }
