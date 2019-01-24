@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import cilveti.inigo.cbmobile2.business.ConjuroPresenter;
@@ -48,6 +50,9 @@ public class ConjuroFragment extends Fragment implements ConjuroContract.View {
     TextView tv_resistencia_conjuros;
     TextView tv_descripcion;
     FloatingActionButton floatingActionButton;
+
+    ProgressBar progressBar;
+    ImageView imageView;
 
     public ConjuroFragment() {
         // Required empty public constructor
@@ -105,6 +110,8 @@ public class ConjuroFragment extends Fragment implements ConjuroContract.View {
         tv_resistencia_conjuros = rootView.findViewById(R.id.tv_resistencia_conjuros);
         tv_descripcion = rootView.findViewById(R.id.tv_descripcion);
         floatingActionButton = rootView.findViewById(R.id.floatingActionButton);
+        progressBar = rootView.findViewById(R.id.pb_sync);
+        imageView = rootView.findViewById(R.id.iv_sync);
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,9 +159,18 @@ public class ConjuroFragment extends Fragment implements ConjuroContract.View {
                     tv_objetivo.setText(conjuro.getObjetivo());
                     tv_objetivo.setText(conjuro.getObjetivo());
                     tv_area.setText(conjuro.getArea());
+                    tv_duracion.setText(conjuro.getDuracion());
                     tv_tirada_salvacion.setText(conjuro.getTiradaSalvacion());
                     tv_resistencia_conjuros.setText(conjuro.getResistenciaConjuros());
                     tv_descripcion.setText(conjuro.getDescripciones());
+
+                    if(conjuro.isChecked()){
+                        imageView.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }else{
+                        imageView.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
                 }
             });
 

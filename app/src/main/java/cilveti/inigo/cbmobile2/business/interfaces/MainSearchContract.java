@@ -11,5 +11,6 @@ public interface MainSearchContract {
 
     interface Presenter{
         void search(String query);
+        void getLatest();
     }
 }

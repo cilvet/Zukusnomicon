@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 public class Conjuro {
+
+    boolean checked = true;
+
     private String conjuroRaw = null;
     private String nombre;
     private List<String> nivel;
@@ -27,6 +30,18 @@ public class Conjuro {
     private String manual;
     ArrayList<String> descripcion = new ArrayList<String>();
 
+    public Conjuro(String nombre, ArrayList<String> descripcion) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
 
     // Getter Methods
     public Map<String, Object> getPropertiesForUpdate(){

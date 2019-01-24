@@ -9,7 +9,9 @@ import io.reactivex.Observable;
 
 public interface DataFetcher {
 
-    public Observable<List<SearchResult>> getTitleSearchResults(String query);
-    public Observable<Conjuro> getConjuro(String id);
+    Observable<List<SearchResult>> getTitleSearchResults(String query);
+    Observable<List<SearchResult>> getLatestResults();
+    Observable<Conjuro> getConjuro(String id);
+    void putConjuro(Conjuro conjuro);
 
 }

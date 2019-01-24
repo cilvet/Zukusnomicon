@@ -1,7 +1,9 @@
 package cilveti.inigo.cbmobile2.ui.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +21,7 @@ import java.util.List;
 import cilveti.inigo.cbmobile2.business.LocalMainSearchPresenter;
 import cilveti.inigo.cbmobile2.business.interfaces.MainProcess;
 import cilveti.inigo.cbmobile2.business.interfaces.MainSearchContract;
+import cilveti.inigo.cbmobile2.ui.activities.CrearConjuroActivity;
 import cilveti.inigo.cbmobile2.utils.ui.MaterialSearchBarCustom;
 import cilveti.inigo.cbmobile2.R;
 import cilveti.inigo.cbmobile2.utils.ui.ResizeAnimation;
@@ -40,6 +43,7 @@ public class MainSearchFragment extends Fragment implements MainSearchContract.V
     MaterialSearchBarCustom searchBar;
     RelativeLayout filters;
     RecyclerView recyclerView;
+    FloatingActionButton floatingActionButton;
 
     public MainSearchFragment() {
         // Required empty public constructor
@@ -65,16 +69,27 @@ public class MainSearchFragment extends Fragment implements MainSearchContract.V
         searchBar = rootview.findViewById(R.id.searchBar);
         filters = rootview.findViewById(R.id.filters);
         recyclerView = rootview.findViewById(R.id.recyclerView);
+        floatingActionButton = rootview.findViewById(R.id.floatingActionButton2);
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new SearchResultsAdapter(new ArrayList<SearchResult>(), getActivity(), mainProcess);
         recyclerView.setAdapter(adapter);
         searchBar.setMenuDividerEnabled(false);
+
 
         filters.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         int filterHeight = filters.getMeasuredHeight();
 
         float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, filterHeight, getResources().getDisplayMetrics());
 
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), CrearConjuroActivity.class);
+                startActivityForResult(i, Constants.RESULT_CODE_TO_BE_RETURNED);
+            }
+        });
 
         searchBar.setOnSearchActionListener(new MaterialSearchBarCustom.OnSearchActionListener() {
             @Override
@@ -121,7 +136,11 @@ public class MainSearchFragment extends Fragment implements MainSearchContract.V
                     mainProcess.copyDatabase();
                 }
 
-                presenter.search(s.toString());
+                if(s.length()>=1){
+                    presenter.search(s.toString());
+                }else{
+                    presenter.getLatest();
+                }
                 }
 
             @Override

@@ -1,5 +1,7 @@
 package cilveti.inigo.cbmobile2.data;
 
+import android.util.Log;
+
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.Document;
@@ -7,8 +9,14 @@ import com.couchbase.lite.Emitter;
 import com.couchbase.lite.Mapper;
 import com.couchbase.lite.UnsavedRevision;
 import com.couchbase.lite.View;
+import com.couchbase.lite.auth.Authenticator;
+import com.couchbase.lite.auth.AuthenticatorFactory;
+import com.couchbase.lite.replicator.RemoteRequestResponseException;
+import com.couchbase.lite.replicator.Replication;
 
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,6 +26,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import cilveti.inigo.cbmobile2.models.SearchResult;
+import cilveti.inigo.cbmobile2.utils.Functions;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 
@@ -40,6 +49,15 @@ public class CouchbaseManager {
     private boolean bulkWorkGoing = false;
 
     private View generalView;
+    private View latestView;
+
+
+
+    private Replication puller;
+    private Replication pusher;
+    private static String replicationUrl ="https://c9611163-45f9-427d-8b47-a23170b5abbf-bluemix.cloudant.com/conjuros";
+    private static String user = "ontoodyingsturadshonertl";
+    private static String apikey = "ae6a52a586e128feca26059833887f4317b2c827";
 
 
     public CouchbaseManager(final Database database, Database searchDatabase) {
@@ -47,6 +65,57 @@ public class CouchbaseManager {
         this.searchDatabase = searchDatabase;
         setUpViews();
         
+    }
+
+
+    public void setUpReplciation(){
+
+        Replication.ChangeListener changeListener = new Replication.ChangeListener() {
+            @Override
+            public void changed(Replication.ChangeEvent event) {
+                if (event.getError() != null) {
+                    Throwable throwable = event.getError();
+                    if (throwable instanceof RemoteRequestResponseException) {
+                        if (((RemoteRequestResponseException) throwable).getCode() == 401) {
+                            Log.i("error login", "errrrrooooooorrr 401");
+                        }
+                    }
+                }
+            }
+        };
+
+        URL url = null;
+        try {
+            url = new URL(this.replicationUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        puller = database.createPullReplication(url);
+        pusher = database.createPushReplication(url);
+        puller.addChangeListener(changeListener);
+
+        Authenticator authenticator = AuthenticatorFactory.createBasicAuthenticator(user, apikey);
+
+        puller.setAuthenticator(authenticator);
+        pusher.setAuthenticator(authenticator);
+
+        puller.setContinuous(true);
+        pusher.setContinuous(true);
+
+    }
+
+    public void restartReplication(){
+        if(puller!=null && pusher!=null){
+            pusher.restart();
+            puller.restart();
+        }
+    }
+
+    public boolean isPushPending(Document  docId){
+        if(pusher!=null){
+            return pusher.isDocumentPending(docId);
+        }
+        return false;
     }
 
     boolean indexing = false;
@@ -71,12 +140,14 @@ public class CouchbaseManager {
     }
 
     private static final String VIEW_TITLE = "title";
+    private static final String VIEW_LATEST = "latest";
     private static final String VIEW_DESCRIPTION = "description";
     private static final String TYPE = "type";
     private static final String SPELL = "conjuro";
     private static final String NAME = "nombre";
     private static final String NOMBRE_ORIGINAL = "manual"; //todo: cambiar esto en el json
     private static final String DESCRIPTION = "descripcion";
+    private static final String TIME = "time";
 
     private void setUpViews(){
 
@@ -86,8 +157,13 @@ public class CouchbaseManager {
             generalView.setMap(new Mapper() {
                 @Override
                 public void map(Map<String, Object> document, Emitter emitter) {
+
                     String spanishName = ((String) document.get(NAME));
                     String originalName = ((String) document.get(NOMBRE_ORIGINAL));
+
+                    if(spanishName == null)spanishName= "";
+                    if(originalName == null)originalName= "";
+
                     spanishName = spanishName.trim().replaceAll(" +", " ");
                     originalName = originalName.trim().replaceAll(" +", " ");
 
@@ -114,8 +190,32 @@ public class CouchbaseManager {
                     for(int i = 0; i< allNames.size(); i++){
                         emitter.emit(allNames.get(i), resultobject);
                     }
+
                 }
-            },"2");
+            },"4");
+        }
+
+        latestView = database.getView(VIEW_LATEST);
+
+        if (latestView.getMap() == null) {
+            latestView.setMap(new Mapper() {
+                @Override
+                public void map(Map<String, Object> document, Emitter emitter) {
+
+                    String spanishName = ((String) document.get(NAME));
+                    String originalName = ((String) document.get(NOMBRE_ORIGINAL));
+                    String time = ((String) document.get(TIME));
+
+                    if(spanishName == null)spanishName= "";
+                    if(originalName == null)originalName= "";
+                    if(time==null)return;
+
+                    SearchResult resultobject = new SearchResult(originalName, spanishName, (String )document.get("_id"), (ArrayList<String>) document.get(DESCRIPTION));
+
+                    emitter.emit(time, resultobject);
+
+                }
+            },"1");
         }
 
     }
@@ -127,6 +227,41 @@ public class CouchbaseManager {
                 return database.getDocument(docId);
             }
         });
+    }
+
+    public void upsertDocument(final Map<String, Object> properties){
+        Document doc = database.createDocument();
+        try {
+            Map<String, Object> updateProperties = doc.update(new Document.DocumentUpdater() {
+                @Override
+                public boolean update(UnsavedRevision newRevision) {
+                    newRevision.setProperties(properties);
+                    return true;
+                }
+            }).getProperties();
+            if(updateProperties!=null);
+
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void upsertDocumentWithTime(final Map<String, Object> properties){
+        properties.put("time", Functions.getStringInstant());
+        Document doc = database.createDocument();
+        try {
+            Map<String, Object> updateProperties = doc.update(new Document.DocumentUpdater() {
+                @Override
+                public boolean update(UnsavedRevision newRevision) {
+                    newRevision.setProperties(properties);
+                    return true;
+                }
+            }).getProperties();
+            if(updateProperties!=null);
+
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
     }
 
     public Observable<Document> getDocumentLive(final String docId){
@@ -157,6 +292,14 @@ public class CouchbaseManager {
         //return searchDatabase.getView(VIEW_TITLE);
         return generalView;
     }
+
+
+    public View getLatestView(){
+
+        //return searchDatabase.getView(VIEW_TITLE);
+        return latestView;
+    }
+
 
 
     public Database getDatabase(){

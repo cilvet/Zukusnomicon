@@ -8,6 +8,20 @@
     tools:context=".ui.activities.ContainerActivity">
 
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:backgroundTint="@color/primary"
+        android:tint="@color/white"
+        android:background="@drawable/rounded_white"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        app:srcCompat="@drawable/ic_add_black_24dp" />
+
     <RelativeLayout
         android:id="@+id/sarchRelative"
         android:layout_width="match_parent"

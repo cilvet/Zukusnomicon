@@ -2,6 +2,7 @@ package cilveti.inigo.cbmobile2.ui.activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -25,6 +26,7 @@ import com.couchbase.lite.auth.AuthenticatorFactory;
 import com.couchbase.lite.replicator.RemoteRequestResponseException;
 import com.couchbase.lite.replicator.Replication;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +34,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -40,6 +43,7 @@ import java.util.Map;
 
 import cilveti.inigo.cbmobile2.R;
 import cilveti.inigo.cbmobile2.business.interfaces.MainProcess;
+import cilveti.inigo.cbmobile2.constants.Constants;
 import cilveti.inigo.cbmobile2.data.CouchbaseManager;
 import cilveti.inigo.cbmobile2.data.DataFetcher;
 import cilveti.inigo.cbmobile2.data.LocalDataFetcher;
@@ -74,13 +78,28 @@ public class ContainerActivity extends AppCompatActivity implements MainProcess 
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==Constants.RESULT_CODE_NUEVO_CONJURO){
+            try{
+                Conjuro conjuro = new Gson().fromJson(data.getStringExtra("conjuro"), Conjuro.class);
+                getLocalDataFetcher().putConjuro(conjuro);
+
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+
+        }
+    }
+
     private void init(){
         abrirFragmento();
         try {
             this.database = openDatabase(databaseName);
             manager = new CouchbaseManager(database, database);
-            setUpReplciation();
-
+            manager.setUpReplciation();
+            manager.restartReplication();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -91,42 +110,6 @@ public class ContainerActivity extends AppCompatActivity implements MainProcess 
         }
     }
 
-    private Replication puller;
-    private static String replicationUrl ="https://c9611163-45f9-427d-8b47-a23170b5abbf-bluemix.cloudant.com/conjuros";
-    private static String user = "ontoodyingsturadshonertl";
-    private static String apikey = "ae6a52a586e128feca26059833887f4317b2c827";
-
-
-    private void setUpReplciation(){
-
-        Replication.ChangeListener changeListener = new Replication.ChangeListener() {
-            @Override
-            public void changed(Replication.ChangeEvent event) {
-                if (event.getError() != null) {
-                    Throwable throwable = event.getError();
-                    if (throwable instanceof RemoteRequestResponseException) {
-                        if (((RemoteRequestResponseException) throwable).getCode() == 401) {
-                            Log.i("error login", "errrrrooooooorrr 401");
-                        }
-                    }
-                }
-            }
-        };
-
-        URL url = null;
-        try {
-            url = new URL(this.replicationUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        puller = database.createPushReplication(url);
-        puller.addChangeListener(changeListener);
-
-        Authenticator authenticator = AuthenticatorFactory.createBasicAuthenticator(user, apikey);
-        puller.setAuthenticator(authenticator);
-        puller.setContinuous(true);
-        puller.start();
-    }
 
     private void abrirFragmento(){
         // Create fragment and give it an argument specifying the article it should show

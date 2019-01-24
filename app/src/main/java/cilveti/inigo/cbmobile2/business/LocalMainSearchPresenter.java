@@ -38,4 +38,19 @@ public class LocalMainSearchPresenter implements MainSearchContract.Presenter {
                     }
                 });
     }
+
+    @Override
+    public void getLatest() {
+        if(disposable!=null)disposable.dispose();
+
+        disposable = fetcher.getLatestResults()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<SearchResult>>() {
+                    @Override
+                    public void accept(List<SearchResult> searchResults) throws Exception {
+                        view.showResults(searchResults);
+                    }
+                });
+    }
 }

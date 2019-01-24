@@ -1,11 +1,16 @@
 package cilveti.inigo.cbmobile2.utils;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+
+import com.couchbase.lite.LiveQuery;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cilveti.inigo.cbmobile2.models.SearchResult;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 
 public class Functions {
     /**
@@ -23,6 +28,19 @@ public class Functions {
         return result;
     }
 
+    public static Observable<LiveQuery.ChangeEvent> observeLiveQuery(LiveQuery liveQuery){
+
+        final PublishSubject<LiveQuery.ChangeEvent> subject = PublishSubject.create();
+        liveQuery.addChangeListener(new LiveQuery.ChangeListener() {
+            @Override
+            public void changed(LiveQuery.ChangeEvent event) {
+                subject.onNext(event);
+            }
+        });
+        liveQuery.start();
+        return subject;
+    }
+
     /**
      *
      * @param originalResults una lista de searchresult
@@ -38,5 +56,14 @@ public class Functions {
             }
         }
         return finalResults;
+    }
+
+    public static long getInstant(){
+        return System.currentTimeMillis();
+    }
+
+    @NonNull
+    public static String getStringInstant(){
+        return String.valueOf(getInstant());
     }
 }
