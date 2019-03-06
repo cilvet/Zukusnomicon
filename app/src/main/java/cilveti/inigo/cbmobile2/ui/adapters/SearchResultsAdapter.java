@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import cilveti.inigo.cbmobile2.R;
+import cilveti.inigo.cbmobile2.business.interfaces.MainActivity;
 import cilveti.inigo.cbmobile2.business.interfaces.MainProcess;
 import cilveti.inigo.cbmobile2.models.SearchResult;
 
@@ -26,12 +27,12 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
     protected Context context;
     private AdapterView.OnItemClickListener onItemClickListener;
     private List<SearchResult> results;
-    private MainProcess mainProcess;
+    private MainActivity mainActivity;
 
-    public SearchResultsAdapter(List<SearchResult> results, Context context, MainProcess mainProcess) {
+    public SearchResultsAdapter(List<SearchResult> results, Context context, MainActivity mainProcess) {
         this.context = context;
         this.results = results;
-        this.mainProcess = mainProcess;
+        this.mainActivity = mainProcess;
     }
 
     /**
@@ -87,7 +88,7 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
             holder.linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mainProcess.openConjuro(result.getId());
+                    mainActivity.openConjuro(result.getId());
                 }
             });
 

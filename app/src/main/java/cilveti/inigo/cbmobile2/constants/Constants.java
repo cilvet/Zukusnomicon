@@ -16,4 +16,5 @@ public class Constants {
     public final static int INDEX_UPDATED = 1;
     public final static int INDEX_CURRENTLY_UPDATING = 2;
     public final static int INDEX_FAILED_TO_UPDATE = 3;
+
 }

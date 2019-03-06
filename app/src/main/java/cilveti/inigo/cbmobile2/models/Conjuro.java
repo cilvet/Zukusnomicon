@@ -72,7 +72,11 @@ public class Conjuro {
         String result = "";
         if(nivel!=null)
         for(String descripcion: nivel){
-            result += ", " +  descripcion;
+            if(result==""){
+                result = descripcion;
+            }else{
+                result += ", " +  descripcion;
+            }
         }
         return result;
     }

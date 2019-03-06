@@ -50,6 +50,7 @@ public class CouchbaseManager {
 
     private View generalView;
     private View latestView;
+    private View filteredView;
 
 
 
@@ -217,6 +218,28 @@ public class CouchbaseManager {
                 }
             },"1");
         }
+
+//        if (filteredView.getMap() == null) {
+//            filteredView.setMap(new Mapper() {
+//                @Override
+//                public void map(Map<String, Object> document, Emitter emitter) {
+//
+//
+//                    String spanishName = ((String) document.get(NAME));
+//                    String originalName = ((String) document.get(NOMBRE_ORIGINAL));
+//                    String time = ((String) document.get(TIME));
+//
+//                    if(spanishName == null)spanishName= "";
+//                    if(originalName == null)originalName= "";
+//                    if(time==null)return;
+//
+//                    SearchResult resultobject = new SearchResult(originalName, spanishName, (String )document.get("_id"), (ArrayList<String>) document.get(DESCRIPTION));
+//
+//                    emitter.emit(time, resultobject);
+//
+//                }
+//            },"1");
+//        }
 
     }
     

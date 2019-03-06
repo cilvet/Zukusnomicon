@@ -13,8 +13,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import Acme.Serve.Main;
 import cilveti.inigo.cbmobile2.business.ConjuroPresenter;
 import cilveti.inigo.cbmobile2.business.interfaces.ConjuroContract;
+import cilveti.inigo.cbmobile2.business.interfaces.MainActivity;
 import cilveti.inigo.cbmobile2.business.interfaces.MainProcess;
 import cilveti.inigo.cbmobile2.R;
 import cilveti.inigo.cbmobile2.models.Conjuro;
@@ -74,7 +76,7 @@ public class ConjuroFragment extends Fragment implements ConjuroContract.View {
         super.onCreate(savedInstanceState);
 
         if(getActivity()!=null){
-            mainProcess = (MainProcess) getActivity();
+            mainProcess = (MainProcess) getActivity().getApplication();
             presenter = new ConjuroPresenter(mainProcess.getLocalDataFetcher(), this);
         }
 
@@ -87,6 +89,10 @@ public class ConjuroFragment extends Fragment implements ConjuroContract.View {
 
         if(idConjuro!=null && presenter!=null){
             presenter.getConjuro(idConjuro);
+        }
+        if(getView()!=null){
+            getView().requestFocus();
+
         }
     }
 
@@ -116,9 +122,11 @@ public class ConjuroFragment extends Fragment implements ConjuroContract.View {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainProcess.openSearch();
+                getActivity().onBackPressed();
             }
         });
+
+
 
         return rootView;
     }

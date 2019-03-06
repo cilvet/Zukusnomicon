@@ -7,8 +7,6 @@ import cilveti.inigo.cbmobile2.models.Conjuro;
 import cilveti.inigo.cbmobile2.models.SearchResult;
 
 public interface MainProcess {
-    void openConjuro(String id);
-    void openSearch();
     void copyDatabase();
     DataFetcher getLocalDataFetcher();
 }

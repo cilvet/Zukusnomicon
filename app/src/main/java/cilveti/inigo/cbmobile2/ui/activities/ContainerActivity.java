@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import cilveti.inigo.cbmobile2.R;
+import cilveti.inigo.cbmobile2.business.interfaces.MainActivity;
 import cilveti.inigo.cbmobile2.business.interfaces.MainProcess;
 import cilveti.inigo.cbmobile2.constants.Constants;
 import cilveti.inigo.cbmobile2.data.CouchbaseManager;
@@ -54,13 +55,10 @@ import cilveti.inigo.cbmobile2.ui.fragments.MainSearchFragment;
 import cilveti.inigo.cbmobile2.utils.Decompress;
 import cilveti.inigo.cbmobile2.utils.file_utils;
 
-public class ContainerActivity extends AppCompatActivity implements MainProcess {
+public class ContainerActivity extends AppCompatActivity implements MainActivity {
 
-    private Database database;
-    private static String databaseName = "mydb";
-    private static final String indexName = "mindex";
-    private CouchbaseManager manager;
 
+    MainProcess mainProcess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +82,7 @@ public class ContainerActivity extends AppCompatActivity implements MainProcess 
         if(resultCode==Constants.RESULT_CODE_NUEVO_CONJURO){
             try{
                 Conjuro conjuro = new Gson().fromJson(data.getStringExtra("conjuro"), Conjuro.class);
-                getLocalDataFetcher().putConjuro(conjuro);
+                mainProcess.getLocalDataFetcher().putConjuro(conjuro);
 
             }catch (Exception ex){
                 ex.printStackTrace();
@@ -95,19 +93,7 @@ public class ContainerActivity extends AppCompatActivity implements MainProcess 
 
     private void init(){
         abrirFragmento();
-        try {
-            this.database = openDatabase(databaseName);
-            manager = new CouchbaseManager(database, database);
-            manager.setUpReplciation();
-            manager.restartReplication();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        this.mainProcess = (MainProcess) getApplication();
     }
 
 
@@ -144,150 +130,39 @@ public class ContainerActivity extends AppCompatActivity implements MainProcess 
     }
 
 
-    private Database openDatabase(String dbName) throws IOException, CouchbaseLiteException, NullPointerException {
 
-        String dbname = dbName;
-        DatabaseOptions options = new DatabaseOptions();
-
-        // if the database doesn't exist, don't create it and throw an exception instead
-        options.setCreate(false);
-        //options.setEncryptionKey(key);
-        Manager manager = null;
-        ManagerOptions managerOptions = new ManagerOptions();
-        managerOptions.setExecutorThreadPoolSize(5);
-
-        manager = new Manager(new AndroidContext(getApplicationContext()), managerOptions);
-        Database mydatabase = manager.openDatabase(dbname, options);
-
-        if(mydatabase==null){
-            return getPreBuiltDatabase(dbName);
-        }
-
-        return mydatabase;
-    }
-
-    private Database getPreBuiltDatabase(String dbName){
-        Database database = null;
-
-        try{
-
-            String path =  "mydb.cblite2.zip";
-            String targetPath = this.getFilesDir().getAbsolutePath() + "/";
-            if (path != null){
-                Decompress.unzipFromAssets(this, path, targetPath);
-            }
-
-            return openDatabase(dbName);
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private void cargarDB() throws JSONException, IOException, CouchbaseLiteException {
-
-        JSONObject conjuroContainer = loadJSONFromAsset(this);
-        JSONArray array = (JSONArray)conjuroContainer.get("conjuros");
-        List<Conjuro> conjuros = new ArrayList<>();
-        Gson mygson = new Gson();
-        for(int i = 0; i < array.length(); i++){
-            conjuros.add(mygson.fromJson(array.get(i).toString(), Conjuro.class));
-        }
-
-
-        DatabaseOptions options = new DatabaseOptions();
-
-        // if the database doesn't exist, don't create it and throw an exception instead
-        options.setCreate(true);
-        //options.setEncryptionKey(key);
-        Manager manager = null;
-        ManagerOptions managerOptions = new ManagerOptions();
-        managerOptions.setExecutorThreadPoolSize(5);
-
-        manager = new Manager(new AndroidContext(getApplicationContext()), managerOptions);
-        Database mydatabase = manager.openDatabase(databaseName, options);
-        this.database = mydatabase;
-
-        for(Conjuro conjuro : conjuros){
-
-            final Map<String, Object> properties = conjuro.getPropertiesForUpdate();
-
-            final Document newSpell = database.createDocument();
-
-            newSpell.update(new Document.DocumentUpdater() {
-                @Override
-                public boolean update(UnsavedRevision newRevision) {
-                    newRevision.setProperties(properties);
-                    return true;
-                }
-            });
-
-        }
-
-    }
-
-    public JSONObject loadJSONFromAsset(Context context) {
-        String json = null;
-        ConjuroContainer conjuroContainer = null;
-        JSONObject object = null;
-
-        try {
-            InputStream is = context.getAssets().open("results.json");
-
-            int size = is.available();
-
-            byte[] buffer = new byte[size];
-
-            is.read(buffer);
-
-            is.close();
-
-            json = new String(buffer, "UTF-8");
-            object = new JSONObject(json);
-
-            //conjuroContainer = new Gson().fromJson(json, ConjuroContainer.class);
-
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return object;
-
-    }
 
     @Override
     public void openConjuro(String id) {
-        // Create fragment and give it an argument specifying the article it should show
-        ConjuroFragment newFragment = ConjuroFragment.newInstance(id);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack so the user can navigate back
-        transaction.replace(R.id.fragment_container, newFragment);
-        transaction.setCustomAnimations(R.anim.fade_in_left, R.anim.fade_in_right);
-        transaction.addToBackStack(null);
-        // Commit the transaction
-        transaction.commit();
+
+        Intent intent = new Intent(this, ConjuroActivity.class);
+        intent.putExtra("id", id);
+        startActivity(intent);
+
+//
+//        // Create fragment and give it an argument specifying the article it should show
+//        ConjuroFragment newFragment = ConjuroFragment.newInstance(id);
+//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//        // Replace whatever is in the fragment_container view with this fragment,
+//        // and add the transaction to the back stack so the user can navigate back
+//        transaction.add(R.id.fragment_container, newFragment);
+//        transaction.show( newFragment);
+//        transaction.setCustomAnimations(R.anim.fade_in_left, R.anim.fade_in_right);
+//        transaction.addToBackStack(null);
+//        // Commit the transaction
+//        transaction.commit();
     }
 
     @Override
-    public void openSearch() {
-        onBackPressed();
-    }
-
-
-    @Override
-    public void copyDatabase(){
-        file_utils.copyDatabase(databaseName, this, database);
+    public MainProcess getMainprocess() {
+        return mainProcess;
     }
 
     @Override
-    public DataFetcher getLocalDataFetcher() {
-        return new LocalDataFetcher(manager);
+    public void onBackPressed() {
+        super.onBackPressed();
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

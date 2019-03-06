@@ -3,8 +3,11 @@ package cilveti.inigo.cbmobile2.ui.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -13,15 +16,19 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cilveti.inigo.cbmobile2.business.LocalMainSearchPresenter;
+import cilveti.inigo.cbmobile2.business.interfaces.MainActivity;
 import cilveti.inigo.cbmobile2.business.interfaces.MainProcess;
 import cilveti.inigo.cbmobile2.business.interfaces.MainSearchContract;
 import cilveti.inigo.cbmobile2.ui.activities.CrearConjuroActivity;
+import cilveti.inigo.cbmobile2.ui.fragments.filters.FilterContainerFragment;
 import cilveti.inigo.cbmobile2.utils.ui.MaterialSearchBarCustom;
 import cilveti.inigo.cbmobile2.R;
 import cilveti.inigo.cbmobile2.utils.ui.ResizeAnimation;
@@ -39,11 +46,13 @@ public class MainSearchFragment extends Fragment implements MainSearchContract.V
 
     private SearchResultsAdapter adapter;
     MainProcess mainProcess;
+    MainActivity mainActivity;
     MainSearchContract.Presenter presenter;
     MaterialSearchBarCustom searchBar;
     RelativeLayout filters;
     RecyclerView recyclerView;
     FloatingActionButton floatingActionButton;
+    ImageButton btn_filter;
 
     public MainSearchFragment() {
         // Required empty public constructor
@@ -60,12 +69,22 @@ public class MainSearchFragment extends Fragment implements MainSearchContract.V
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        mainProcess = (MainProcess) getActivity();
+
+        if(savedInstanceState!=null && getView()!=null){
+            return getView();
+        }
+
+
+        mainActivity = (MainActivity) getActivity();
+        mainProcess = mainActivity.getMainprocess();
+
         presenter = new LocalMainSearchPresenter(mainProcess.getLocalDataFetcher(), this);
 
 
         View rootview =  inflater.inflate(R.layout.fragment_main_search, container, false);
+        btn_filter = rootview.findViewById(R.id.btn_filter);
         searchBar = rootview.findViewById(R.id.searchBar);
         filters = rootview.findViewById(R.id.filters);
         recyclerView = rootview.findViewById(R.id.recyclerView);
@@ -73,10 +92,16 @@ public class MainSearchFragment extends Fragment implements MainSearchContract.V
 
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new SearchResultsAdapter(new ArrayList<SearchResult>(), getActivity(), mainProcess);
+        adapter = new SearchResultsAdapter(new ArrayList<SearchResult>(), getActivity(), mainActivity);
         recyclerView.setAdapter(adapter);
         searchBar.setMenuDividerEnabled(false);
 
+        btn_filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFilterSelector();
+            }
+        });
 
         filters.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         int filterHeight = filters.getMeasuredHeight();
@@ -152,6 +177,17 @@ public class MainSearchFragment extends Fragment implements MainSearchContract.V
         return rootview;
     }
 
+    private void showFilterSelector(){
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+        DialogFragment dialogFragment = new FilterContainerFragment();
+        dialogFragment.show(ft, "dialog");
+    }
+
     /**
      * Animar redimensionando los filtros.
      *
@@ -170,5 +206,11 @@ public class MainSearchFragment extends Fragment implements MainSearchContract.V
         if(adapter!=null){
             adapter.updateValues(results);
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //presenter.getLatest();
     }
 }

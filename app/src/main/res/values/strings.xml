@@ -4,4 +4,25 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="filter_by_class_level">Filtrar por clase</string>
+    <string name="contiene_escuelas">Tiene una de estas escuelas</string>
+    <string name="contiene_subescuelas">Tiene una de estas subescuelas</string>
+    <string name="contiene_descriptores">Contiene cualquiera de estos descriptores</string>
+    <string name="nivel_igual_o_mayor_que">Nivel del conjuro mayor o igual que</string>
+    <string name="nivel_igual_o_menor_que">Nivel de conjuro igual o menor que</string>
+    <string name="en_una_de_estas_clases">En una de estas clases</string>
+    <string name="en_ninguna_de_estas_clases">En ninguna de estas clases</string>
+    <string name="tiene_componentes">Tiene cualquiera de estos componentes</string>
+    <string name="tiene_todos_los_componentes">Tiene todos estos componentes</string>
+    <string name="tiene_algunos_componentes">Tiene alguno de estos componentes</string>
+    <string name="tiene_tiempos_de_casteo">Tiene alguno de estos tiempos de casteo</string>
+    <string name="tiene_tiempos_de_recarga">Tiene alguno de estos tiempos de recarga</string>
+    <string name="tiene_rangos">Tiene alguno de estos rangos</string>
+    <string name="tiene_efectos">Tiene alguno de estos efectos</string>
+    <string name="tiene_duraciones">Tiene alguna de estas duraciones</string>
+    <string name="ts_contiene_alguno">Tiene alguna de estas tiradadas de salvación</string>
+    <string name="ts_contiene_todos">Tiene todas estas tiradas de salvación</string>
+    <string name="ts_no_contiene">No contiene ninguna de estas tiradas de salvación</string>
+    <string name="re_contiene_alguno">Contiene alguna de estas resistencias</string>
+    <string name="re_contiene_todos">Contiene todas estas resistencias</string>
+    <string name="re_no_contiene">No contiene ninguna de estas resistencias</string>
 </resources>

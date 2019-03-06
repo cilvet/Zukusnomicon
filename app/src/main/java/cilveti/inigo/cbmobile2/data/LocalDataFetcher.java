@@ -13,6 +13,7 @@ import java.util.concurrent.Callable;
 
 import cilveti.inigo.cbmobile2.models.Conjuro;
 import cilveti.inigo.cbmobile2.models.SearchResult;
+import cilveti.inigo.cbmobile2.models.filters.Filter;
 import cilveti.inigo.cbmobile2.utils.Functions;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
@@ -66,6 +67,11 @@ public class LocalDataFetcher implements DataFetcher {
             }
         });
 
+    }
+
+    @Override
+    public Observable<List<SearchResult>> getFilteredResults(Filter filter) {
+        return null;
     }
 
     @Override
