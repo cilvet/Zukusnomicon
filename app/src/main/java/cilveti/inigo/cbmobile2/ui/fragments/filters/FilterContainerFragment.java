@@ -23,6 +23,8 @@ import cilveti.inigo.cbmobile2.models.filters.Filter;
 public class FilterContainerFragment extends DialogFragment implements IFiltersParentFragment{
 
     private int selectedCode;
+    private boolean isDeciding;
+    private Filter filter;
     private List<String> selectedValues;
 
     public FilterContainerFragment() {
@@ -81,10 +83,16 @@ public class FilterContainerFragment extends DialogFragment implements IFiltersP
     @Override
     public List<Option> getOptions() {
 
+        switch (selectedCode){
+
+        }
+
         List<Option> list = new ArrayList<>();
         list.add(new Option(1, "Nivel"));
         list.add(new Option(2, "Clase"));
         list.add(new Option(3, "Descriptor"));
+        list.add(new Option(4, "asfdasf"));
+        list.add(new Option(5, "Descasdfasfafariptor"));
         return list;
 
     }

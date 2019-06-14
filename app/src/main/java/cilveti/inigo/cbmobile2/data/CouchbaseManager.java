@@ -56,9 +56,9 @@ public class CouchbaseManager {
 
     private Replication puller;
     private Replication pusher;
-    private static String replicationUrl ="https://c9611163-45f9-427d-8b47-a23170b5abbf-bluemix.cloudant.com/conjuros";
-    private static String user = "ontoodyingsturadshonertl";
-    private static String apikey = "ae6a52a586e128feca26059833887f4317b2c827";
+    private static String replicationUrl ="https://c9611163-45f9-427d-8b47-a23170b5abbf-bluemix.cloudant.com/conjuros_static3";
+    private static String user = "atillouldshenimaketlystr";
+    private static String apikey = "66abdb6ce46e143b410a417abe1d93f9ee498a85";
 
 
     public CouchbaseManager(final Database database, Database searchDatabase) {

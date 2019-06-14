@@ -20,6 +20,7 @@ import cilveti.inigo.cbmobile2.business.interfaces.MainActivity;
 import cilveti.inigo.cbmobile2.business.interfaces.MainProcess;
 import cilveti.inigo.cbmobile2.R;
 import cilveti.inigo.cbmobile2.models.Conjuro;
+import cilveti.inigo.cbmobile2.models.ConjuroV2;
 import io.reactivex.disposables.Disposable;
 
 
@@ -34,12 +35,13 @@ public class ConjuroFragment extends Fragment implements ConjuroContract.View {
     private OnFragmentInteractionListener mListener;
     private String idConjuro;
     private MainProcess mainProcess;
-    private Conjuro conjuro;
+    private ConjuroV2 conjuro;
     private Disposable disposable;
     ConjuroContract.Presenter presenter;
 
     TextView tv_nombre;
     TextView tv_nombre_original;
+    TextView tv_manual;
     TextView tv_escuelas;
     TextView tv_nivel;
     TextView tv_componentes;
@@ -104,6 +106,7 @@ public class ConjuroFragment extends Fragment implements ConjuroContract.View {
 
         tv_nombre = rootView.findViewById(R.id.tv_nombre);
         tv_nombre_original = rootView.findViewById(R.id.tv_original_name);
+        tv_manual = rootView.findViewById(R.id.tv_manual);
         tv_escuelas = rootView.findViewById(R.id.tv_escuelas);
         tv_nivel = rootView.findViewById(R.id.tv_nivel);
         tv_componentes = rootView.findViewById(R.id.tv_componentes);
@@ -151,14 +154,15 @@ public class ConjuroFragment extends Fragment implements ConjuroContract.View {
     }
 
     @Override
-    public void showConjuro(final Conjuro conjuro) {
+    public void showConjuro(final ConjuroV2 conjuro) {
         ConjuroFragment.this.conjuro = conjuro;
         if(conjuro!=null){
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     tv_nombre.setText(conjuro.getNombre());
-                    tv_nombre_original.setText(conjuro.getManual());
+                    tv_nombre_original.setText(conjuro.getOriginalName());
+                    tv_manual.setText(conjuro.getManual());
                     tv_escuelas.setText(conjuro.getEscuela());
                     tv_nivel.setText(conjuro.getNiveles());
                     tv_componentes.setText(conjuro.getComponentesString());
@@ -167,7 +171,7 @@ public class ConjuroFragment extends Fragment implements ConjuroContract.View {
                     tv_objetivo.setText(conjuro.getObjetivo());
                     tv_objetivo.setText(conjuro.getObjetivo());
                     tv_area.setText(conjuro.getArea());
-                    tv_duracion.setText(conjuro.getDuracion());
+                    tv_duracion.setText(conjuro.getDuraciones());
                     tv_tirada_salvacion.setText(conjuro.getTiradaSalvacion());
                     tv_resistencia_conjuros.setText(conjuro.getResistenciaConjuros());
                     tv_descripcion.setText(conjuro.getDescripciones());

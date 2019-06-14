@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "504727711798",
+    "firebase_url": "https://zukusnomicon-54e2f.firebaseio.com",
+    "project_id": "zukusnomicon-54e2f",
+    "storage_bucket": "zukusnomicon-54e2f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:504727711798:android:1b1079ec22afc84b",
+        "android_client_info": {
+          "package_name": "cilveti.inigo.cbmobile2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "504727711798-73v7l9hq6usa3u6ad2v3prolagbt2htq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cilveti.inigo.cbmobile2",
+            "certificate_hash": "3e634d1a363bb6b095d9ee034a0fe7a3f1756b20"
+          }
+        },
+        {
+          "client_id": "504727711798-vb4k0hqpnibh32537ikqpfp1ajqus64g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAC8c_7rGKaQRY_33c-ovGVjFfO_7_wxWg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "504727711798-vb4k0hqpnibh32537ikqpfp1ajqus64g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

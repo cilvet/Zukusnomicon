@@ -153,6 +153,27 @@ public class ContainerActivity extends AppCompatActivity implements MainActivity
 //        transaction.commit();
     }
 
+    void asd (){
+        int i;
+        boolean ejecutar;
+
+        ejecutar = true;
+        i = 12;
+
+        while(ejecutar){
+            if(i%3 ==0){
+                ejecutar = false;
+            }
+            i = i-1;
+            write(i);
+        }
+    }
+
+
+    void write(int i){
+
+    }
+
     @Override
     public MainProcess getMainprocess() {
         return mainProcess;

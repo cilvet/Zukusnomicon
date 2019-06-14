@@ -101,6 +101,15 @@
                     android:textStyle="italic" />
 
                 <TextView
+                    android:id="@+id/tv_manual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="TextView"
+                    android:textColor="@android:color/black"
+                    android:textSize="17sp" />
+
+                <TextView
                     android:id="@+id/tv_escuelas"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import cilveti.inigo.cbmobile2.models.Conjuro;
+import cilveti.inigo.cbmobile2.models.ConjuroV2;
 import cilveti.inigo.cbmobile2.models.SearchResult;
 import cilveti.inigo.cbmobile2.models.filters.Filter;
 import cilveti.inigo.cbmobile2.utils.Functions;
@@ -122,6 +123,20 @@ public class LocalDataFetcher implements DataFetcher {
                     @Override
                     public Conjuro apply(Document document) throws Exception {
                         Conjuro conjuro =  Conjuro.documentMapToConjuro(document.getProperties());
+                        conjuro.setChecked(!manager.isPushPending(document));
+                        return conjuro;
+                    }
+                });
+    }
+
+    @Override
+    public Observable<ConjuroV2> getConjuroV2(String id) {
+        return manager.getDocument(id)
+                .mergeWith(manager.getDocumentLive(id))
+                .map(new Function<Document, ConjuroV2>() {
+                    @Override
+                    public ConjuroV2 apply(Document document) throws Exception {
+                        ConjuroV2 conjuro =  ConjuroV2.documentMapToConjuro(document.getProperties());
                         conjuro.setChecked(!manager.isPushPending(document));
                         return conjuro;
                     }
